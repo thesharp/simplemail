@@ -3,7 +3,7 @@
 ## Overview
 **simplemail** is an easy way to send emails in Python. It will use a sendmail binary which is almost always available and ready to go.
 
-## Dependancies
+## Dependencies
 - Python 2.6 or 2.7
 
 ## Sample usecase
