@@ -11,7 +11,7 @@ setup(
     author_email="sharp@thesharp.ru",
     maintainer="Ilya A. Otyutskiy",
     url="https://github.com/thesharp/simplemail",
-    description="simplemail",
+    description="An easy way to send emails in Python",
     license="MIT"
 )
 
