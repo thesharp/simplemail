@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="simplemail",
-    version="0.1",
+    version="0.2",
     packages=["simplemail"],
     # install_requires=[""],
     author="Ilya A. Otyutskiy",
@@ -14,4 +14,3 @@ setup(
     description="An easy way to send emails in Python",
     license="MIT"
 )
-

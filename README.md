@@ -35,5 +35,30 @@ Let's compose a personal greeting for every member of your list and fire an emai
 
 Now you have a personal greeting for all of your subscribers.
 
+## Logging handler
+There is a special logging handler which utilizes the simplemail library. Here's a code sample:
+
+    import logging
+    from simplemail import Simplemail
+    from simplemail.handlers import SimplemailLogger
+
+    # Initializing Simplemail
+    mail = Simplemail(sender="Application Error <errors@domain.tld>",
+                      recipient=["you@domain.tld"])
+
+    # Initializing logger
+    logger = logging.getLogger()
+    logger.setLevel(logging.DEBUG)
+    logger.propagate = False
+    # Sending SimplemailLogger the Simplemail object, application name
+    # and the treshold
+    sl = SimplemailLogger(mail, __name__, logging.WARNING)
+    logger.addHandler(sl)
+
+    # Writing to the log
+    logger.warn("test")
+
+The handler's constructor expects three arguments. One is mandatory: **mailobject** is the Simplemail object itself, which needs to be initialized before. Two others are optional: **app** contains your application name, which will be mentioned in the mail subject; and **level** which is the treshold at which the handler will be triggered.
+
 ## Downloads
 This library is available at [PyPi](http://pypi.python.org/pypi/simplemail).
