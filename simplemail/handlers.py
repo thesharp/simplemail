@@ -1,4 +1,4 @@
-from logging import Handler, NOTSET, Filterer, _checkLevel, _addHandlerRef
+from logging import Handler, NOTSET, Filterer, _acquireLock, _releaseLock
 
 # Reverse definition of levels
 levels = {50: "CRITICAL", 40: "ERROR", 30: "WARNING",
@@ -14,14 +14,14 @@ class SimplemailLogger(Handler):
         """
         Filterer.__init__(self)
         self._name = None
-        self.level = _checkLevel(level)
+        self.level = level
         self.formatter = None
-        # Add the handler to the global _handlerList (for cleanup on shutdown)
-        _addHandlerRef(self)
+        _acquireLock()
         self.createLock()
         self.mailobject = mailobject
         if app:
             self.app = app
+        _releaseLock()
 
     def emit(self, record):
         """ emit method
