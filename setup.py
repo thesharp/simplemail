@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="simplemail",
-    version="0.2",
+    version="0.3",
     packages=["simplemail"],
     # install_requires=[""],
     author="Ilya A. Otyutskiy",

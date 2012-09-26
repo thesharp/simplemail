@@ -21,6 +21,8 @@ class SimplemailLogger(Handler):
         self.mailobject = mailobject
         if app:
             self.app = app
+        else:
+            self.app = None
         _releaseLock()
 
     def emit(self, record):
