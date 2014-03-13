@@ -4,12 +4,12 @@ from setuptools import setup, find_packages
 
 setup(
     name="simplemail",
-    version="0.3",
+    version="0.4",
     packages=["simplemail"],
     # install_requires=[""],
-    author="Ilya A. Otyutskiy",
-    author_email="sharp@thesharp.ru",
-    maintainer="Ilya A. Otyutskiy",
+    author="Ilya Otyutskiy",
+    author_email="ilya.otyutskiy@icloud.com",
+    maintainer="Ilya Otyutskiy",
     url="https://github.com/thesharp/simplemail",
     description="An easy way to send emails in Python",
     license="MIT"
