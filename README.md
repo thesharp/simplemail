@@ -35,6 +35,17 @@ Let's compose a personal greeting for every member of your list and fire an emai
 
 Now you have a personal greeting for all of your subscribers.
 
+## HTML emails
+You can add an optional HTML-view of your email with the html variable. E.g.:
+
+    from simplemail import Simplemail
+
+    body = "Hi!"
+    html = "<strong>Hi!</strong>"
+
+    message = Simplemail(sender="You <your@mail>", recipient=["your@mail"], subject="html test")
+    message.send(body=body, html=html)
+
 ## Logging handler
 There is a special logging handler which utilizes the simplemail library. Here's a code sample:
 

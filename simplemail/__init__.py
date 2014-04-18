@@ -2,6 +2,8 @@
 # -*- encoding: utf-8 -*-
 
 from os import popen
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 
 class NoSender(Exception):
@@ -38,25 +40,24 @@ class SendmailError(Exception):
 
 
 class Simplemail(object):
-    """ This object sets up the email sending procedure.  Subject and
-    the message body are both encoded in utf-8 for non-ascii charsets.
+    """ This object sets up the email sending procedure. Subject and the message body are both
+    encoded in utf-8 for non-ascii charsets.
 
     The following arguments are required to set the default procedure:
 
     sender -- contains the string with the sender information in the
-              "Sender Name <email@domain.tld> format.
+    "Sender Name <email@domain.tld> format.
     recipient -- contains a list with the recipients addresses like
-                 ["user1@domain.tld", "user2@domain.tld"].
+    ["user1@domain.tld", "user2@domain.tld"].
     subject -- contains a string with the email subject like "Subject".
+    body -- countains an actual plain-text body.
 
     The following arguments are optional:
 
-    sendmail -- contains a string with the sendmail path.  The default
-                value is "/usr/sbin/sendmail"
-    cc -- contains a tuple with the cc-recipients addresses.  Format is
-          the same as recipient.
-    bcc -- contains a tuple with the bcc-recipients addresses.  Format
-           is the same as recipient.
+    sendmail -- contains a string with the sendmail path. The default value is "/usr/sbin/sendmail"
+    cc -- contains a list with the cc-recipients addresses. Format is the same as recipient.
+    bcc -- contains a list with the bcc-recipients addresses. Format is the same as recipient.
+    html -- contains an optional html body.
     """
 
     def __init__(self, sendmail="/usr/sbin/sendmail", **kwargs):
@@ -66,13 +67,13 @@ class Simplemail(object):
         self.defaults.update(kwargs)
 
     def send(self, **kwargs):
-        """ This method actually sends the email.  But it allows you to
-        override all the default values from the object constructor.
+        """ This method actually sends the email. But it allows you to override all the default
+        values from the object constructor.
 
         For example:
                    Simplemail.send(sender="John Doe <jdoe@domain.tld>")
-        It will use all the values from the initial object definition,
-        but it will override the sender value.
+        It will use all the values from the initial object definition, but it will override the
+        sender value.
         """
         settings = self.defaults.copy()
         settings.update(kwargs)
@@ -87,17 +88,20 @@ class Simplemail(object):
         if not "body" in settings.keys():
             raise NoBody
         sm = popen("%s -t" % settings["sendmail"], "w")
-        sm.write("From: %s\n" % settings["sender"])
-        sm.write("To: %s\n" % ", ".join(settings["recipient"]))
+        msg = MIMEMultipart("alternative")
+        msg["From"] = settings["sender"]
+        msg["To"] = ", ".join(settings["recipient"])
+        msg["Subject"] = settings["subject"]
+        msg["Content-Type"] = "text/plain; charset=UTF-8; format=flowed"
+        msg["Content-Transfer-Encoding"] = "8bit"
         if "cc" in settings.keys():
-            sm.write("Cc: %s\n" % ", ".join(settings["cc"]))
+            msg["Cc"] = ", ".join(settings["cc"])
         if "bcc" in settings.keys():
-            sm.write("Bcc: %s\n" % ", ".join(settings["bcc"]))
-        sm.write("Subject: %s\n" % settings["subject"])
-        sm.write("Content-Type: text/plain; charset=UTF-8; format=flowed\n")
-        sm.write("Content-Transfer-Encoding: 8bit\n")
-        sm.write("\n")
-        sm.write("%s\n" % settings["body"])
+            msg["Bcc"] = ", ".join(settings["bcc"])
+        msg.attach(MIMEText(settings["body"], "plain"))
+        if "html" in settings.keys():
+            msg.attach(MIMEText(settings["html"], "html"))
+        sm.write("%s\n" % msg.as_string())
         status = sm.close()
         if status:
             raise SendmailError(status)
